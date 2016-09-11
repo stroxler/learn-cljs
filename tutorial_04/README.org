@@ -1,0 +1,19 @@
+* Notes on this tutorial
+
+** I didn't quite follow the example
+
+I made =login.cljs= be imported by core.cljs, rather than
+using =login.cljs= only and then needing to tweak the
+=main.cljs.edn= file, which is what the actual tutorial
+wants. If I had done the latter, then I would have had to
+modify the =:require= block in the =.edn= file to also
+require =modern-cljs.login=... it seems that you need to
+list any namespaces that actually execute top-level code
+in this block. I prefer the pattern where only =core=
+executes top-level code.
+
+** the example isn't very complete
+
+This tutorial ends with a working validation function, but
+there's not actual server-side endpoint. We will deal with
+this in a later tutorial.
