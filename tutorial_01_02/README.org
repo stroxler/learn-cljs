@@ -1,0 +1,33 @@
+* Notes on this tutorial
+
+** I don't yet fully understand boot's model
+
+In general, a lot of actions modify the "next"
+handler, for example the =watch= action says it will
+rerun the "next" handler whenever a file changes.
+
+What's strange here is that the =wait= action says it will
+wait before calling the "next" handler. But if it meant the
+same thing when it says "next" as =watch= does, then this
+would mean it doesn't ever do anything! It may be that I'm
+misunderstanding, or it may be that boot itself is consistent
+and the docs are misleading, maybe =watch= ought to actually
+say it waits *after* calling the next handler.
+
+** live reloading works even if you serve via a different server
+
+This is the same as what I saw with =lein figwheel=: I ran
+the boot server on port 3000 and then ran this:
+#+BEGIN_SRC bash
+cd http
+python -m SimpleHTTPServer 4444
+#+END_SRC
+
+I opened up both [[localhost:4444]] and [[localhost:3000]] in the
+browser, then edited my clojurescript, and both of the pages
+reloaded. So the websocket connection is independent of how
+the pages are getting served, and broadcasts to all listening
+browsers. This means boot is usable with non-clojure backends,
+just like =lein figwheel=. At this juncture I still don't have
+much reason to prefer one or the other, although I do like
+boot's model thus far.
