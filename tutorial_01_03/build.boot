@@ -18,3 +18,16 @@
          '[pandeiro.boot-http :refer [serve]]
          '[adzerk.boot-reload :refer [reload]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]])
+
+
+(deftask dev
+  "Launch a dev environment: watch and compile, serve files, set up
+  browser reloading, and connect an nrepl server to the browser"
+  []
+  (comp
+   (serve :dir "build")
+   (watch)
+   (reload)
+   (cljs-repl)
+   (cljs)
+   (target :dir #{"build"})))
