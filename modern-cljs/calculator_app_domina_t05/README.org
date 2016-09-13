@@ -1,0 +1,11 @@
+* Notes on this tutorial
+
+Here we introduce the =domina= library, which is a
+=jquery=-like clojurescript library for simple DOM
+manipulation. Using it, we make a simple calculator
+form.
+
+We also refactor the project structure a bit to
+work for a multi-page app, with both the login and
+the price calculator.
+
