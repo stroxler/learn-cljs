@@ -1,5 +1,4 @@
-* Notes on this tutorial
-
+* Notes on this tutorial (which covers 06, 07, 08, and 10 but not 09)
 ** multi-page webapps in cljs
 
 *** how the previous tutorial worked
@@ -56,7 +55,7 @@ ways to use the tools, and (maybe more important for a
 backend guy like me) how this front-end stuff and the
 google closure compiler actually work
 
-** Changing our <submit> inputs to <button>s
+** domina events part 1: changing our <submit> inputs to <button>s
 
 It's a little strange at this point that for a front-end-only
 app we're using =submit= type =input= elements to trigger
@@ -82,6 +81,17 @@ but the events API is more idiomatic).
 Since there's no default =POST= call when using a =button=,
 we're also able to remove the return of =false= from
 =calculate-total=
+
+** domina events part 2: adding mouse events to the shopping form
+
+Here we also add a dependency on the =hiccups= library, which
+is a subset of the clojure =hiccup= library used to generate
+html in a (non-React-driven) way in clojurescript.
+
+One nice thing about using =hiccups= is that the html snippets
+we right will be adaptable to =reagent= or =rum=, or to server-
+side templating with =hiccup=, should we want to make these
+changes in the future.
 
 ** Side note: changing html doesn't requre refresh
 

@@ -1,22 +1,21 @@
 (set-env!
   :source-paths #{"src/cljs"}
   :resource-paths #{"html"}
-  :dependencies '[[org.clojure/clojure "1.7.0"]
+  :dependencies '[
+                  ;; boot dependencies ;;
+                  [org.clojure/clojure "1.7.0"]
                   [org.clojure/clojurescript "1.7.170"]
                   [adzerk/boot-cljs "1.7.170-3"]
                   [pandeiro/boot-http "0.7.0"]
                   [adzerk/boot-reload "0.4.9"]
                   [adzerk/boot-cljs-repl "0.3.0"]
-                  ;; the 3 below are all cljs-repl dependencies
-                  ;; (as of 0.3.0 it doesn't include transitive dependencies)
-                  [com.cemerick/piggieback "0.2.1"]
-                  [weasel "0.7.0"]
-                  [org.clojure/tools.nrepl "0.2.12"]
-                  ;; --------------------------------;;
-                  ;; Above are the boot dependencies ;;
-                  ;; Below are the app dependencies  ;;
-                  ;; --------------------------------;;
+                  [com.cemerick/piggieback "0.2.1"]     ;; cljs-repl 0.3.0 doesn't
+                  [weasel "0.7.0"]                      ;; include transitive dependencies,
+                  [org.clojure/tools.nrepl "0.2.12"]    ;; which is why these are here
+                  ;; Client-side dependencies ;;
                   [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
+                  [hiccups "0.3.0"]
+                  ;; Server-side dependencies ;;
                   ])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
