@@ -1,0 +1,89 @@
+* Notes on this tutorial
+
+** multi-page webapps in cljs
+
+*** how the previous tutorial worked
+In the tutorials for the simple price calculator and
+login, we demonstrated how to factor out a module from
+the core package, but we left the core in place and
+kept a single-page webapp (by this I don't mean react-style
+single page apps, but just that there is only one
+page, and hence only a single init function that needs
+to be attached to =window=.
+
+Because the webapps were single page, it remained okay
+to just attach the =main.js= compiled script, which
+included the calls to =(set! (.-onload js/document) init)=.
+
+Also, because the only top-level code that needed to be
+executed was in =core.cljs=, we were able leave the
+=main.cljs.edn= file in =html/js= unchanged: it only needed
+to import =core=, which in turn handled importing the
+secondary namespace.
+
+Actually even this is a simplification: because we were
+calling =js/window.onload= directly in =core=, we didn't even
+need to export anything. Hence the lack of =^:export= metadata
+in any previous tutorial
+
+*** this tutorial: one namespace per page
+
+But in a multi-page app, the =init= function nearly always
+needs to vary by page. We could solve this in a few ways. One
+common solution, which we'll use here, is to expose multiple
+namespaces in =main.js=, with each one defining their own
+init.
+
+Then, external =<script>= tags can refer to functions
+in those namespace. So for each page, we can call the
+=init= function from the appropriate namespace.
+
+Note: when using clojurescript namespaces and functions
+in javascript, all dashes become underscores.
+
+*** alternative: still use core for all the entry points
+
+Note that another viable option would be to leave
+=main.cljs.edn= untouched, and just define all the different
+init functions there. We would still need to make sure we
+=:^export= the init functions so that they are avaliable
+from javascripts in =<script>= tags further down the page.
+
+I actually like that approach better
+and will probably adopt it for the next tutorial, but
+doing it in different ways helps to demonstrate various
+ways to use the tools, and (maybe more important for a
+backend guy like me) how this front-end stuff and the
+google closure compiler actually work
+
+** Changing our <submit> inputs to <button>s
+
+It's a little strange at this point that for a front-end-only
+app we're using =submit= type =input= elements to trigger
+our actions by modifying =.onsubmit=. It works, but traditionally
+=submit= is used for forms that are going to a server (and
+the default action is to make an =http= =POST= request).
+
+Modern html designers frequently use =button= elements instead,
+especially when the action triggered by clicking the button
+is client-side only. (To be clear: this isn't actually a big
+deal, the modern-clojurescript authors do this mostly to
+introduce the =events= part of the =domina= api, not because
+the page is made substatively "better"
+
+So if you look at =shopping.html= and =shopping.cljs=, you'll
+see that we've switched that input from =submit= to =button=
+type, and instead of attaching =calculate-total= to =.onsubmit=,
+we're using the =domina= =listen!= function, part of the
+events api, to attach =calculate-total= as a listener to
+=click= events. (We could also do this using =(set! (.-onclick)...=,
+but the events API is more idiomatic).
+
+Since there's no default =POST= call when using a =button=,
+we're also able to remove the return of =false= from
+=calculate-total=
+
+** Side note: changing html doesn't requre refresh
+
+Part of the =boot= =reload= functionality is reloading not just
+javascript but also html.
