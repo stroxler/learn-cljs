@@ -93,6 +93,47 @@ we right will be adaptable to =reagent= or =rum=, or to server-
 side templating with =hiccup=, should we want to make these
 changes in the future.
 
+** domina events part 3: adding domina events to the login form
+
+Our original login form attached a handler to the =.onsubmit= attribut of the
+=submit= input. Instead of using the raw DOM api to do this, we're going to use
+a domina event watcher, much as we did for the =button= in the shopping form.
+
+This time our handler has to actually change, because instead of returning
+=false= the way a raw javascript handler should do when we want to prevent the
+POST request, a =domina= handler should have an argument which is a
+=domina.events/Event=. This clojure protocol (think of it as a class, except the
+"methods" are just regular functions) has several functions, which you can see
+in the repl by running
+#+BEGIN_SRC clojurescript
+(require '[domina.events :as de])
+(doc de/Event)
+#+END_SRC
+
+We can prevent the default action to an event by calling the =prevent-default=
+function. We continue returning =true= if the form is valid, although I checked
+manually that you can omit this and the form will still submit.
+
+This dynamic validation actually adds quite a bit of complexity to the app,
+since we attach these validators both (a) inside of handlers for =:blur=
+evants, and (b) as validation utilities inside the =submit= handler.
+
+By changing the class for =help= to =error=, we also were able to take
+advantage of some styling which was already part of =styles.css= to get nice
+red error messages :)
+
+** domina events part 4: dynamic validation
+
+The =:blur= event (the word only makes sense if you think "opposit of focus")
+happens when a user de-selects an editable text element. We can add dynamic
+validation - which doesn't require the user clicking =submit= - by adding
+handlers for =:blur= events.
+
+Using regex match statements, which in clojure are supported by prefacing
+a string with =#=. For the record: clojurescript regexps are implemented by
+using javascript directly, so in advanced cases their use may differ slightly
+from clojure, see the documentation.
+
 ** Side note: changing html doesn't requre refresh
 
 Part of the =boot= =reload= functionality is reloading not just
