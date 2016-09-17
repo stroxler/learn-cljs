@@ -32,3 +32,19 @@ issue was, but reloading everything eventually worked.
 Fortunately this kind of refactor is relatively rare, hopefully
 in time I'll have a better mental model for the compile / send
 to browser cycle.
+
+** add a clojure webserver
+
+The changes needed: in =build.boot=, and "src/clj" as a =source-path=,
+and =compojure= as a dependency. Then modify the =serve= action.
+
+In the server, all you need at a minimum is a =defroutes= statement.
+Frequently for real examples people wind up using a =->= statement to
+wrap the handler with various things (a =shoreleave= handler, or some
+=hiccup= middleware, or other things like that) but for a dead-simple
+example this is not needed.
+
+I won't dwell on the clojure code much since this isn't a clojure tutorial
+(and in fact I'm intentionally diverging from the authors on the question
+of how we do ajax calls because I don't want to use any libraries that would
+tie me to clojure webservers)

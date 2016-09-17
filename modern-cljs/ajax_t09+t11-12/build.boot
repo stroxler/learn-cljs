@@ -1,5 +1,5 @@
 (set-env!
-  :source-paths #{"src/cljs"}
+  :source-paths #{"src/cljs" "src/clj"}
   :resource-paths #{"html"}
   :dependencies '[
                   ;; boot dependencies ;;
@@ -16,6 +16,8 @@
                   [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
                   [hiccups "0.3.0"]
                   ;; Server-side dependencies ;;
+                  [compojure "1.4.0"]
+                  [javax.servlet/servlet-api "2.5"]
                   ])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
@@ -29,7 +31,10 @@
   browser reloading, and connect an nrepl server to the browser"
   []
   (comp
-   (serve :dir "build")
+   ;; serve up static files only with ring... (serve :dir "build")
+   (serve :handler 'modern-cljs.server/handler
+          :resource-root "build"
+          :reload true)
    (watch)
    (reload)
    (cljs-repl)
