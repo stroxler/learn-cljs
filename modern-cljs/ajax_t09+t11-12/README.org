@@ -1,0 +1,34 @@
+* Notes on this tutorial (which covers 06, 07, 08, and 10 but not 09)
+** multi-page webapps in cljs, alternate
+
+*** how the previous tutorial worked
+There's a setion in the previous tutorial's README about
+it's approach to multi-page webapps, the key thing is that
+each cljs file corresponded to a page, and exported its
+init function.
+
+I prefer to have my entry-points more tightly organized,
+so in this tutorial I return to the single-page app
+norm of using only core.cljs for init, and I expose
+a separate init function for each page
+
+Note that the =main.cljs.edn= file now once again looks
+the way it did before, and it doesn't have to change if we
+add or remove pages.
+
+*** lessons learned in that refactor
+
+Initially I copy-paseted =login.cljs= to get the new =core.cljs=,
+and this lead to =core.clj= having namespace =login= at first.
+This caused all sorts of problems involving the browser state
+involving out-of-date namespace definitions; in this situation
+my advice is to shut down your development environment, make
+clean, reload the browser (to get a page not found), and
+restart everything. Do it with devtools open on the browser - the
+idea is that you need to clear your cache completely, or else you
+can get aliasing... TBH I still don't fully understand what the
+issue was, but reloading everything eventually worked.
+
+Fortunately this kind of refactor is relatively rare, hopefully
+in time I'll have a better mental model for the compile / send
+to browser cycle.
