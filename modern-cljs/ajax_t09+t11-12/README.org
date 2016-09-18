@@ -35,6 +35,7 @@ to browser cycle.
 
 ** add a clojure webserver
 
+*** getting a minimal server running
 The changes needed: in =build.boot=, and "src/clj" as a =source-path=,
 and =compojure= as a dependency. Then modify the =serve= action.
 
@@ -48,3 +49,26 @@ I won't dwell on the clojure code much since this isn't a clojure tutorial
 (and in fact I'm intentionally diverging from the authors on the question
 of how we do ajax calls because I don't want to use any libraries that would
 tie me to clojure webservers)
+
+*** Adding a json API
+
+At this point I diverged from the tutorial because while I start out with
+clojure, I want to stick to making and using APIs in a non-clojure-specific
+way, that is, via vanilla json ajax.
+
+I did the server side first, and it actually turned out to be pretty
+time-consuming for me to figure out a basic json POST on my own, I definitely
+want to sit down with a book on the subject before I have to do much more -
+ring and compojure seem to be well-put together, but they aren't guessable
+for me.
+
+Also there's something wrong with my =build.boot= file; I thought the
+=serve= task with =:reload true= was supposed to reload the server side,
+but my clojure code wasn't getting reloaded. I probably won't fix that in
+this tutorial since I'm more concerned about clojurescript, but the solution
+is something to look out for, because that made debugging really obnoxious.
+
+I added a curl script so that you can verify this is a normal json api,
+not relying on any clojure-specific magic like a lot of the =sente= and
+=shoreleave= demos I've seen - you can replace this server with python or
+another backend without changing any of the clojurescript code.
