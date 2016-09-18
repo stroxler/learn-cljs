@@ -7,8 +7,8 @@
                   [org.clojure/clojurescript "1.7.170" :scope "test"]
                   [adzerk/boot-cljs "1.7.170-3" :scope "test"]
                   [pandeiro/boot-http "0.7.0" :scope "test"]
-                  [samestep/boot-refresh "0.1.0" :scope "test"] ; refresh clj
-                  [adzerk/boot-test "1.0.7" :scope "test"]      ; test in clj
+                  [adzerk/boot-test "1.0.7" :scope "test"]
+                  [crisptrutski/boot-cljs-test "0.2.2-SNAPSHOT" :scope "test"]
                   [adzerk/boot-reload "0.4.9" :scope "test"]    ; reload cljs
                   [adzerk/boot-cljs-repl "0.3.0" :scope "test"]
                   ;; (these 3 are dependencies that boot-cljs-repl
@@ -20,7 +20,7 @@
                   ;; Client-side dependencies ;;
                   [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
                   [hiccups "0.3.0"]
-                  [cljs-ajax "0.5.4"]                 ;; also works in jvm clj, despite the name
+                  [cljs-ajax "0.5.4"]          ;; also works in jvm clj, despite the name
 
                   ;; Server-side dependencies ;;
                   [compojure "1.4.0"]
@@ -34,13 +34,32 @@
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[pandeiro.boot-http :refer [serve]]
          '[adzerk.boot-reload :refer [reload]]
-         '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]])
+         '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
+         '[adzerk.boot-test :refer [test]]
+         '[crisptrutski.boot-cljs-test :refer [test-cljs]]
+         )
 
 (deftask with-test-code
   "Add test source code to the :source-paths"
   []
   (set-env! :source-paths #(conj % "test/cljc"))
   identity)
+
+(deftask tdd
+  "Launch a dev environment that also runs unit tests"
+  []
+  (comp
+   ;; serve up static files only with ring... (serve :dir "build")
+   (serve :handler 'modern-cljs.server/app
+          :resource-root "build"
+          :reload true)
+   (with-test-code)
+   (watch)
+   (reload)
+   (cljs-repl)
+   (cljs)
+   (test :namespaces '#{modern-cljs.shopping-validation-test})
+   (target :dir #{"build"})))
 
 (deftask dev
   "Launch a dev environment: watch and compile, serve files, set up

@@ -136,3 +136,15 @@ so every time you change the test you unfortunately have to restart
 the =boot repl=. I'll figure this out one of these days, but it seems
 hard to google, and Modern Clojurescript doesn't seem to have the right
 =build.boot=.
+
+** adding tests to boot
+
+To add unit tests to our one true boot terminal (not the only option, we
+could run tests in a separate process instead) we create a small
+=with-test-code= task that adds our test src to =:source-paths=, and then
+we add in a call to =test= in a new task, =tdd=, that looks a lot like
+=dev= but adds unit tests.
+
+The tutorial also covers using =test-cljs=, but I was unable to get it
+working after a bit of fighting, so for now I'll stick to regular
+clojure tests (with the understanding that I can only test shared code).
