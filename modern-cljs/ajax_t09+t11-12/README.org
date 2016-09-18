@@ -72,3 +72,10 @@ I added a curl script so that you can verify this is a normal json api,
 not relying on any clojure-specific magic like a lot of the =sente= and
 =shoreleave= demos I've seen - you can replace this server with python or
 another backend without changing any of the clojurescript code.
+
+The client-side I handle with =cljs-ajax=, which is a pretty vanilla
+ajax library that can handle several data formats including json. This
+particular library is supposed to be portable to clojure, which makes
+it potentially useful on the server-side as well (although I think as
+it stands you can't use it for server-side clojurescript on node - when
+you do use clojurescript I think it assumes you're in a browser)

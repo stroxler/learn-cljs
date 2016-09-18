@@ -2,7 +2,8 @@
   (:require [domina.core :refer [by-id value by-class
                                  set-value! append! destroy!]]
             [domina.events :refer [listen!]]
-            [hiccups.runtime])
+            [hiccups.runtime]
+            [ajax.core :refer [GET POST]])
   (:require-macros [hiccups.core :refer [html]]))
 
 
@@ -11,12 +12,16 @@
         quantity (value-at-id "quantity")
         price (js/Number (value-at-id "price"))
         tax-percent (js/Number (value-at-id "taxrate"))
-        discount (js/Number (value-at-id "discount"))
-        tax-mult (+ 1.0 (/ tax-percent 100))
-        total (-> (* quantity price)
-                  (* tax-mult)
-                  (- discount))]
-    (set-value! (by-id "total") total)))
+        discount (js/Number (value-at-id "discount"))]
+    (POST "/shopping-price"
+        {:response-format :json
+         :format :json
+         :params {:quantity quantity
+                  :price price
+                  :tax-percent tax-percent
+                  :discount discount}
+         :handler (fn [response]
+                    (set-value! (by-id "total") (response "total")))})))
 
 
 (defn init []
