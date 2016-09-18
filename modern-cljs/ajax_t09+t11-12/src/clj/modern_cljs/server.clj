@@ -3,7 +3,8 @@
             [compojure.route :as route]
             [compojure.handler :as handler]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [ring.util.response :refer [response]]))
+            [ring.util.response :refer [response]]
+            [modern-cljs.login-validation :refer [email-valid? password-valid?]]))
 
 ;; general ring json utils
 
@@ -37,20 +38,7 @@
     {:status 200
      :body {:total (calculate-total quantity price tax-percent discount)}}))
 
-;; login form logic and request handler (TODO remove duplicated code)
-
-
-(def ^:dynamic *password-rx* #"^(?=[^\d]*\d).{4,8}")
-
-;; match an email. Note that the domain has to be 2-4 lowercase letters
-(def ^:dynamic *email-rx* #"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z]{2,4})$")
-
-
-(defn email-valid? [email]
-  (re-matches *email-rx* email))
-
-(defn password-valid? [password]
-  (re-matches *password-rx* password))
+;; login form logic and request handler
 
 (defn login-handler [request]
   (println (str "request: " request))

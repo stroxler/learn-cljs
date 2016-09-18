@@ -79,3 +79,29 @@ particular library is supposed to be portable to clojure, which makes
 it potentially useful on the server-side as well (although I think as
 it stands you can't use it for server-side clojurescript on node - when
 you do use clojurescript I think it assumes you're in a browser)
+
+*** curl scripts to exercise endpoints
+
+Just to make sure I wasn't using an any clojure-specific magics in my
+ajax, I added a few curl scripts to exercise my server and verify that the
+json api is just vanilla json
+
+** sharing client and server code
+
+After finishing the copy-paste version of login handling on the server
+in Tutorial 11, I made a =cljc= directory and moved the shared code there.
+The only change the project needed other than that and changing the
+filename was to add "src/cljc" to the =:source-paths= key in the boot
+=env=.
+
+** using the validp library (which is isomorphic)
+
+I'm actually skipping the Tutorial 12 bit on using =validp= to validate
+the login form.
+
+This isn't because I don't think =validp= is important to learn: not at
+all, the library looks really cool and almost certainly useful for lots
+of practical front-end work. But in Tutorials 14 and 15 we
+are going to be looking at using it to validate the shopping form, which
+is more in need of validation right now, and also learn unit testing
+at the same time.
