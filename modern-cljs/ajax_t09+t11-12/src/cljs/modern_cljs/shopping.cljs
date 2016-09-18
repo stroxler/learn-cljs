@@ -3,25 +3,36 @@
                                  set-value! append! destroy!]]
             [domina.events :refer [listen!]]
             [hiccups.runtime]
-            [ajax.core :refer [GET POST]])
+            [ajax.core :refer [GET POST]]
+            [modern-cljs.shopping-validation :refer [validate-shopping-form]])
   (:require-macros [hiccups.core :refer [html]]))
 
 
+(defn calculate-on-server [quantity price tax-percent discount]
+  (POST "/shopping-price"
+      {:response-format :json
+       :format :json
+       :params {:quantity (js/Number quantity)
+                :price (js/Number price)
+                :tax-percent (js/Number tax-percent)
+                :discount (js/Number discount)}
+       :handler (fn [response]
+                  (set-value! (by-id "total") (response "total")))}))
+
+
 (defn calculate-total []
+  (destroy! (by-class "error"))
   (let [value-at-id #(-> % (by-id) (value))
         quantity (value-at-id "quantity")
-        price (js/Number (value-at-id "price"))
-        tax-percent (js/Number (value-at-id "taxrate"))
-        discount (js/Number (value-at-id "discount"))]
-    (POST "/shopping-price"
-        {:response-format :json
-         :format :json
-         :params {:quantity quantity
-                  :price price
-                  :tax-percent tax-percent
-                  :discount discount}
-         :handler (fn [response]
-                    (set-value! (by-id "total") (response "total")))})))
+        price (value-at-id "price")
+        tax-percent (value-at-id "tax-percent")
+        discount (value-at-id "discount")]
+    (if-let [errors (validate-shopping-form quantity price tax-percent discount)]
+      (doseq [[key message] errors]
+        (js/console.log message)
+        (append! (by-id (str (name key) "-div"))
+                 (html [:div.error (apply str message)])))
+      (calculate-on-server quantity price tax-percent discount))))
 
 
 (defn init []

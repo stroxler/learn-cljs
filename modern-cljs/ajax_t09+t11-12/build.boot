@@ -12,14 +12,19 @@
                   [com.cemerick/piggieback "0.2.1"]   ;; cljs-repl 0.3.0 doesn't
                   [weasel "0.7.0"]                    ;; include transitive dependencies,
                   [org.clojure/tools.nrepl "0.2.12"]  ;; which is why these are here
+
                   ;; Client-side dependencies ;;
                   [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
                   [hiccups "0.3.0"]
                   [cljs-ajax "0.5.4"]                 ;; also works in jvm clj, despite the name
+
                   ;; Server-side dependencies ;;
                   [compojure "1.4.0"]
                   [ring/ring-json "0.4.0"]
                   [javax.servlet/servlet-api "2.5"]
+
+                  ;; shared dependencies
+                  [org.clojars.magomimmo/valip "0.4.0-SNAPSHOT"]
                   ])
 
 (require '[adzerk.boot-cljs :refer [cljs]]

@@ -96,12 +96,18 @@ filename was to add "src/cljc" to the =:source-paths= key in the boot
 
 ** using the validp library (which is isomorphic)
 
-I'm actually skipping the Tutorial 12 bit on using =validp= to validate
-the login form.
+I'm skipped the Tutorial 12 bit on using =validp= to validate the login form,
+because it doesn't have so much to teach beyond what we learn anyway when
+validating the shopping form.
 
-This isn't because I don't think =validp= is important to learn: not at
-all, the library looks really cool and almost certainly useful for lots
-of practical front-end work. But in Tutorials 14 and 15 we
-are going to be looking at using it to validate the shopping form, which
-is more in need of validation right now, and also learn unit testing
-at the same time.
+Moving on, from Tutorial 14 we get validp client-side validators for the
+login form. I do this validation client-side and not server-side partly
+because I'm lazy, but the most important things we are validating are type
+information that the server silently assumes.
+
+I added a little bit of jquery-style magic, where the errors pop up under
+the fields where there's a mistyped entry.
+
+** adding unit tests
+
+This is the next thing to do...
