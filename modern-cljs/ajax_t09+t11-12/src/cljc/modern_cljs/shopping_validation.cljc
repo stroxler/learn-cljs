@@ -11,7 +11,7 @@
              :tax-percent tax-percent :discount discount}
             [:quantity present? "quantity cannot be empty"]
             [:quantity integer-string? "quantity should be an integer"]
-            [:quantity (gt 0) "Quantity cannot be negative"]
+            [:quantity (gt 0) "quantity cannot be negative"]
             [:price present? "price cannot be empty"]
             [:price decimal-string? "price should be a number"]
             [:tax-percent present? "tax-percent cannot be empty"]

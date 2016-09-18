@@ -110,4 +110,29 @@ the fields where there's a mistyped entry.
 
 ** adding unit tests
 
-This is the next thing to do...
+To add unit tests, we make a =test= directory next to the =src= directory
+(note that this is slightly less nested than the maven-style structure),
+and create a =cljc= file for tests. The testing macros are our first use
+of a reader conditional, because for =clj= we want to just require
+=clojure.test= but in =cljc= we need to =:require-macros= =cljs.test=, which
+is different because =:require-macros= is specifically a clojurescript
+action, needed because the separation in clojurescript between runtime
+code and compile-time macros is stronger than in clojure.
+
+To actually run the tests, we don't boot set up yet. But you can run them
+from the =boot repl= as follows:
+ #+BEGIN_SRC clojure
+(set-env! :source-paths #(conj % "test/cljc"))
+(require '[clojure.test :as t] '[modern-cljs.shopping-validation-test])
+(t/run-tests 'modern-cljs.shopping-validation-test)
+ #+END_SRC
+
+You can also run them clojurescript-side, but I ran into a Java error
+I didn't understand while trying to do so, so I won't go into details.
+Most likely I mistyped something.
+
+Note that I still have yet to figure out clojure-side reloading in boot,
+so every time you change the test you unfortunately have to restart
+the =boot repl=. I'll figure this out one of these days, but it seems
+hard to google, and Modern Clojurescript doesn't seem to have the right
+=build.boot=.
