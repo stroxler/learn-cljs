@@ -1,7 +1,8 @@
 (ns modern-cljs.login
   (:require [domina.core :refer [by-id by-class value prepend! append! destroy!]]
             [domina.events :refer [listen! prevent-default]]
-  [hiccups.runtime])
+            [ajax.core :refer [POST]]
+            [hiccups.runtime])
   (:require-macros [hiccups.core :refer [html]]))
 
 
@@ -19,16 +20,32 @@
 ;; match an email. Note that the domain has to be 2-4 lowercase letters
 (def ^:dynamic *email-rx* #"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z]{2,4})$")
 
+(defn email-valid? [email]
+  (re-matches *email-rx* email))
+
+
+(defn password-valid? [password]
+  (re-matches *password-rx* password))
+
+
+(defn validate-form-field [field-name field-value validator]
+  (let [general-class "error" ; this is here for css
+        specific-class (str field-name "-error") ; this is here for by-class
+        class-specifier (str general-class " " specific-class)
+        err-msg (str "Invalid " field-name)]
+    (destroy! (by-class specific-class))
+    (if (validator field-value)
+      true
+      (do
+        (prepend! (by-id "loginForm")
+                  (html [:div {:class class-specifier} err-msg]))
+        false))))
 
 (defn validate-email [email]
-  (destroy! (by-class "email-error"))
-  (if (re-matches *email-rx* email)
-    true
-    (do
-      (prepend! (by-id "loginForm")
-                (html [:div.error.email-error "Invalid email"]))
-      false)))
+  (validate-form-field "email" email email-valid?))
 
+(defn validate-passwrod [password]
+  (validate-form-field "password" password password-valid?))
 
 (defn validate-password [password]
   (destroy! (by-class "password-error"))
@@ -39,23 +56,50 @@
                 (html [:div.error.password-error "Invalid password"]))
       false)))
 
-
-(defn validate-form [e]
-  (let [fail (fn [] (prevent-default e))
-        loginForm (by-id "loginForm")
+(defn validate-form [email password]
+  (let [loginForm (by-id "loginForm")
         email (-> "email" (by-id) (value))
         password (-> "password" (by-id) (value))
         incomplete (or (empty? email)
                        (empty? password))]
-  (destroy! (by-class "error"))
-  (if incomplete
-    (do
-      (append! loginForm (html [:div.error.form "Please Complete the Form"]))
-      (fail))
-    (if (and (validate-email email)
+    (if (and (not incomplete)
+             (validate-email email)
              (validate-password password))
       true
-      (fail)))))
+      false)))
+
+
+(defn do-login-form-error []
+  (append! (by-id "loginForm")
+           (html [:div.error.form "Please Complete the Form"])))
+
+
+(defn do-login [email password]
+  (let [data {:email email :password password}
+        loginForm (by-id "loginForm")
+        callback (fn [response]
+                   (if (response "success")
+                     (append! loginForm
+                               (html [:div "Successfully logged in!"]))
+                     (append! loginForm
+                               (html [:div.error "Login unsuccessful"]))))]
+    (POST "/login"
+      {:response-format :json
+       :format :json
+       :params data
+       :handler callback})))
+
+(defn login-handler [e]
+  (let [loginForm (by-id "loginForm")
+        email (-> "email" (by-id) (value))
+        password (-> "password" (by-id) (value))
+        incomplete (or (empty? email)
+                       (empty? password))]
+    (prevent-default e)
+    (destroy! (by-class "error"))
+    (if (validate-form email password)
+      (do-login email password)
+      (do-login-form-error))))
 
 
 (defn init []
@@ -71,4 +115,4 @@
              :blur
              (validate-on-value validate-password "password"))
     (listen! (by-id "submit")
-             :click validate-form)))
+             :click login-handler)))
